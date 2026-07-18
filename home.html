@@ -223,7 +223,7 @@
   <h1>My Shop</h1>
   <div class="header-right">
     <a class="profile-icon" id="profileIcon" href="profile.html">&#128100;</a>
-    <a class="logout" href="login.html">Logout</a>
+    <a class="logout" href="login.html" onclick="localStorage.removeItem('loggedIn')">Logout</a>
   </div>
 </header>
 
@@ -247,6 +247,14 @@
 </div>
 
 <script>
+  // ============================================
+  // AUTH GUARD: block direct access without logging in
+  // ============================================
+  if (localStorage.getItem("loggedIn") !== "true") {
+    window.location.href = "login.html";
+  }
+  // ============================================
+
   // ============================================
   // CHANGE / ADD YOUR PRODUCTS HERE
   // Each product needs: name, price, image (a URL or local file path)

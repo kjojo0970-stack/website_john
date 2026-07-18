@@ -176,6 +176,14 @@
 </div>
 
 <script>
+  // ============================================
+  // AUTH GUARD: block direct access without logging in
+  // ============================================
+  if (localStorage.getItem("loggedIn") !== "true") {
+    window.location.href = "login.html";
+  }
+  // ============================================
+
   // Load cart saved from the home page
   const cart = JSON.parse(localStorage.getItem("cart") || "[]");
 

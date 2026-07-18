@@ -161,6 +161,14 @@
 </div>
 
 <script>
+  // ============================================
+  // AUTH GUARD: block direct access without logging in
+  // ============================================
+  if (localStorage.getItem("loggedIn") !== "true") {
+    window.location.href = "login.html";
+  }
+  // ============================================
+
   const photoInput = document.getElementById("photoInput");
   const photoPreview = document.getElementById("photoPreview");
   let photoData = null; // will hold the photo as a data URL
