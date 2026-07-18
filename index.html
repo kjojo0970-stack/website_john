@@ -105,10 +105,14 @@
 
   <script>
     // ============================================
-    // CHANGE THE CORRECT USERNAME AND PASSWORD HERE
+    // ADD OR CHANGE ACCOUNTS HERE
+    // Add as many accounts as you want, each with a username and password
     // ============================================
-    const VALID_USERNAME = "john website";
-    const VALID_PASSWORD = "171220";
+    const ACCOUNTS = [
+      { username: "admin", password: "1234" },
+      { username: "johnwebsite", password: "171220" },
+      { username: "sara", password: "sara2024" }
+    ];
     // ============================================
 
     const form = document.getElementById("loginForm");
@@ -120,7 +124,12 @@
       const username = document.getElementById("username").value.trim();
       const password = document.getElementById("password").value.trim();
 
-      if (username === VALID_USERNAME && password === VALID_PASSWORD) {
+      // check if any account in the list matches what was typed
+      const match = ACCOUNTS.find(
+        acc => acc.username === username && acc.password === password
+      );
+
+      if (match) {
         // correct login -> go to home page
         window.location.href = "home.html";
       } else {
