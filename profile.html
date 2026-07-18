@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+  body {
+    background: #f4f6f8;
+    min-height: 100vh;
+    padding: 30px 15px;
+  }
+  .back-link {
+    display: block;
+    max-width: 480px;
+    margin: 0 auto 15px;
+    color: #4facfe;
+    text-decoration: none;
+    font-size: 14px;
+  }
+  .card {
+    max-width: 480px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  }
+  .card h2 {
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+  }
+
+  .photo-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .photo-preview {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: #eee;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 34px;
+    color: #aaa;
+    margin-bottom: 10px;
+  }
+  .photo-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .photo-section input[type="file"] {
+    font-size: 13px;
+  }
+
+  .input-group { margin-bottom: 14px; }
+  .input-group label {
+    display: block;
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 5px;
+  }
+  .input-group input {
+    width: 100%;
+    padding: 9px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  .input-group input:focus {
+    outline: none;
+    border-color: #4facfe;
+  }
+
+  button.save-btn {
+    width: 100%;
+    padding: 11px;
+    background: #4facfe;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    cursor: pointer;
+    margin-top: 6px;
+  }
+  button.save-btn:hover { background: #0090e0; }
+
+  .divider {
+    margin: 22px 0;
+    border-top: 1px solid #eee;
+  }
+
+  button.forgot-btn {
+    width: 100%;
+    padding: 11px;
+    background: #eee;
+    color: #444;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  button.forgot-btn:hover { background: #e2e2e2; }
+
+  #saveMsg, #forgotMsg {
+    text-align: center;
+    font-size: 13px;
+    margin-top: 10px;
+    min-height: 16px;
+  }
+  #saveMsg { color: #2ecc71; }
+  #forgotMsg { color: #4facfe; }
+</style>
+</head>
+<body>
+
+<a class="back-link" href="home.html">&larr; Back to Shop</a>
+
+<div class="card">
+  <h2>My Profile</h2>
+
+  <div class="photo-section">
+    <div class="photo-preview" id="photoPreview">&#128100;</div>
+    <input type="file" id="photoInput" accept="image/*">
+  </div>
+
+  <form id="profileForm">
+    <div class="input-group">
+      <label for="name">Name</label>
+      <input type="text" id="name" placeholder="Your name">
+    </div>
+    <div class="input-group">
+      <label for="birthdate">Birthdate</label>
+      <input type="date" id="birthdate">
+    </div>
+    <div class="input-group">
+      <label for="email">Email (Gmail)</label>
+      <input type="email" id="email" placeholder="you@gmail.com">
+    </div>
+    <div class="input-group">
+      <label for="phone">Phone Number</label>
+      <input type="tel" id="phone" placeholder="01xxxxxxxxx">
+    </div>
+
+    <button type="submit" class="save-btn">Save Profile</button>
+    <div id="saveMsg"></div>
+  </form>
+
+  <div class="divider"></div>
+
+  <button class="forgot-btn" onclick="forgotPassword()">Forgot Password?</button>
+  <div id="forgotMsg"></div>
+</div>
+
+<script>
+  const photoInput = document.getElementById("photoInput");
+  const photoPreview = document.getElementById("photoPreview");
+  let photoData = null; // will hold the photo as a data URL
+
+  // load any previously saved profile
+  const saved = JSON.parse(localStorage.getItem("profile") || "null");
+  if (saved) {
+    document.getElementById("name").value = saved.name || "";
+    document.getElementById("birthdate").value = saved.birthdate || "";
+    document.getElementById("email").value = saved.email || "";
+    document.getElementById("phone").value = saved.phone || "";
+    if (saved.photo) {
+      photoData = saved.photo;
+      photoPreview.innerHTML = `<img src="${saved.photo}" alt="Profile photo">`;
+    }
+  }
+
+  // preview the picture as soon as it's chosen
+  photoInput.addEventListener("change", function () {
+    const file = photoInput.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      photoData = e.target.result; // data URL, works offline, no upload needed
+      photoPreview.innerHTML = `<img src="${photoData}" alt="Profile photo">`;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById("profileForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const profile = {
+      name: document.getElementById("name").value.trim(),
+      birthdate: document.getElementById("birthdate").value,
+      email: document.getElementById("email").value.trim(),
+      phone: document.getElementById("phone").value.trim(),
+      photo: photoData
+    };
+
+    localStorage.setItem("profile", JSON.stringify(profile));
+    document.getElementById("saveMsg").textContent = "Profile saved!";
+    setTimeout(() => { document.getElementById("saveMsg").textContent = ""; }, 2500);
+  });
+
+  function forgotPassword() {
+    const email = document.getElementById("email").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const msgEl = document.getElementById("forgotMsg");
+
+    if (!email && !phone) {
+      msgEl.style.color = "#e74c3c";
+      msgEl.textContent = "Add your email or phone number first, then save your profile.";
+      return;
+    }
+
+    // In a real app, this would call a server which emails/texts a reset link or code.
+    msgEl.style.color = "#4facfe";
+    let destination = email ? email : phone;
+    msgEl.textContent = `A password reset message has been sent to ${destination}.`;
+  }
+</script>
+
+</body>
+</html>
